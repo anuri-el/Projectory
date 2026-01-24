@@ -13,6 +13,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import com.projectory.ui.achievements.AchievementsScreen
 import com.projectory.ui.home.HomeScreen
 import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
@@ -109,14 +110,14 @@ fun ProjectoryApp() {
                 )
             }
 
-//            // Achievements Screen
-//            composable(Screen.Achievements.route) {
-//                AchievementsScreen(
-//                    onNavigateToProject = { projectId ->
-//                        navController.navigate(Screen.ProjectDetail.createRoute(projectId))
-//                    }
-//                )
-//            }
+            // Achievements Screen
+            composable(Screen.Achievements.route) {
+                AchievementsScreen(
+                    onNavigateToProject = { projectId ->
+                        navController.navigate(Screen.ProjectDetail.createRoute(projectId))
+                    }
+                )
+            }
 
             // Project Detail Screen
             composable(

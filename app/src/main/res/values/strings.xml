@@ -1,3 +1,55 @@
 <resources>
     <string name="app_name">Projectory</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_memories">Memories</string>
+    <string name="nav_achievements">Achievements</string>
+
+    <!-- Home Screen -->
+    <string name="welcome_title">Welcome :)</string>
+    <string name="welcome_subtitle">What project did you work on today?</string>
+    <string name="add_project">Add a project</string>
+    <string name="add_project_subtitle">Is there a project you are working on?</string>
+    <string name="projects_reading">You are working on %d projects.</string>
+
+    <!-- Stats -->
+    <string name="book_calendar">Book Calendar</string>
+    <string name="calendar_subtitle">How much have you read this month?</string>
+    <string name="streak">Streak</string>
+    <string name="streak_days">%d days</string>
+    <string name="daily_statistics">Daily statistics</string>
+    <string name="annual_statistics">Annual statistics</string>
+    <string name="annual_projects_read">%d projects read</string>
+    <string name="goals">Goals</string>
+    <string name="goals_subtitle">View your collections</string>
+    <string name="my_library">My Library</string>
+    <string name="library_subtitle">All projects</string>
+
+    <!-- Project -->
+    <string name="day_n">Day %d</string>
+    <string name="page_progress">p. %d / %d</string>
+    <string name="from_date">From %s</string>
+    <string name="first_reading">First reading</string>
+    <string name="time_remaining">⏱ %s remaining</string>
+    <string name="time_spent">⏱ %s spent</string>
+    <string name="projects_to_work_on_later">Projects to work on later</string>
+
+    <!-- Common -->
+    <string name="loading">Loading…</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="close">Close</string>
+
+    <!-- Empty States -->
+    <string name="no_memories">No memories yet</string>
+    <string name="no_memories_subtitle">Add notes to your projects to see them here</string>
+    <string name="no_achievements">No completed projects yet</string>
+    <string name="no_achievements_subtitle">Complete your first project to see it here!</string>
+    <string name="no_projects">No projects yet</string>
+    <string name="no_projects_subtitle">Start your first project!</string>
 </resources>
