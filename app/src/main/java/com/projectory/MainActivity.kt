@@ -14,6 +14,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.projectory.ui.home.HomeScreen
+import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
 import com.projectory.ui.theme.ProjectoryTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,15 +100,15 @@ fun ProjectoryApp() {
                 )
             }
 
-//            // Memories Screen
-//            composable(Screen.Memories.route) {
-//                MemoriesScreen(
-//                    onNavigateToProject = { projectId ->
-//                        navController.navigate(Screen.ProjectDetail.createRoute(projectId))
-//                    }
-//                )
-//            }
-//
+            // Memories Screen
+            composable(Screen.Memories.route) {
+                MemoriesScreen(
+                    onNavigateToProject = { projectId ->
+                        navController.navigate(Screen.ProjectDetail.createRoute(projectId))
+                    }
+                )
+            }
+
 //            // Achievements Screen
 //            composable(Screen.Achievements.route) {
 //                AchievementsScreen(
