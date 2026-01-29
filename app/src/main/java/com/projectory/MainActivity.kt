@@ -17,6 +17,7 @@ import com.projectory.ui.achievements.AchievementsScreen
 import com.projectory.ui.home.HomeScreen
 import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
+import com.projectory.ui.project.detail.ProjectDetailScreen
 import com.projectory.ui.theme.ProjectoryTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -124,8 +125,9 @@ fun ProjectoryApp() {
                 route = Screen.ProjectDetail.route,
                 arguments = listOf(navArgument("projectId") { type = NavType.LongType })
             ) {
-                // TODO: ProjectDetailScreen
-                Text("Project Detail Screen")
+                ProjectDetailScreen(
+                    onNavigateBack = { navController.navigateUp() }
+                )
             }
 
             // Add Project Screen
