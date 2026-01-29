@@ -17,6 +17,7 @@ import com.projectory.ui.achievements.AchievementsScreen
 import com.projectory.ui.home.HomeScreen
 import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
+import com.projectory.ui.project.add.AddProjectScreen
 import com.projectory.ui.project.detail.ProjectDetailScreen
 import com.projectory.ui.theme.ProjectoryTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -132,8 +133,14 @@ fun ProjectoryApp() {
 
             // Add Project Screen
             composable(Screen.AddProject.route) {
-                // TODO: AddProjectScreen
-                Text("Add Project Screen")
+                AddProjectScreen(
+                    onNavigateBack = { navController.navigateUp() },
+                    onProjectCreated = { projectId ->
+                        navController.navigate(Screen.ProjectDetail.createRoute(projectId)) {
+                            popUpTo(Screen.Home.route)
+                        }
+                    }
+                )
             }
 
             // Calendar Screen
