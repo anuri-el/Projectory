@@ -16,6 +16,7 @@ import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.projectory.ui.achievements.AchievementsScreen
 import com.projectory.ui.calendar.CalendarScreen
+import com.projectory.ui.collections.CollectionsScreen
 import com.projectory.ui.home.HomeScreen
 import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
@@ -171,11 +172,13 @@ fun ProjectoryApp() {
                 )
             }
 
-            // Collections Screen (TODO)
+            // Collections Screen
             composable(Screen.Collections.route) {
-                PlaceholderScreen(
-                    title = "Collections",
-                    onNavigateBack = { navController.navigateUp() }
+                CollectionsScreen(
+                    onNavigateBack = { navController.navigateUp() },
+                    onNavigateToProject = { projectId ->
+                        navController.navigate(Screen.ProjectDetail.createRoute(projectId))
+                    }
                 )
             }
 
