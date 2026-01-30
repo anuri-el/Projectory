@@ -3,7 +3,8 @@ package com.projectory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,6 +15,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.projectory.ui.achievements.AchievementsScreen
+import com.projectory.ui.calendar.CalendarScreen
 import com.projectory.ui.home.HomeScreen
 import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
@@ -145,33 +147,80 @@ fun ProjectoryApp() {
 
             // Calendar Screen
             composable(Screen.Calendar.route) {
-                // TODO: CalendarScreen
-                Text("Calendar Screen")
+                CalendarScreen(
+                    onNavigateBack = { navController.navigateUp() },
+                    onNavigateToProject = { projectId ->
+                        navController.navigate(Screen.ProjectDetail.createRoute(projectId))
+                    }
+                )
             }
 
-            // Daily Stats Screen
+            // Daily Stats Screen (TODO)
             composable(Screen.DailyStats.route) {
-                // TODO: DailyStatsScreen
-                Text("Daily Stats Screen")
+                PlaceholderScreen(
+                    title = "Daily Statistics",
+                    onNavigateBack = { navController.navigateUp() }
+                )
             }
 
-            // Annual Stats Screen
+            // Annual Stats Screen (TODO)
             composable(Screen.AnnualStats.route) {
-                // TODO: AnnualStatsScreen
-                Text("Annual Stats Screen")
+                PlaceholderScreen(
+                    title = "Annual Statistics",
+                    onNavigateBack = { navController.navigateUp() }
+                )
             }
 
-            // Collections Screen
+            // Collections Screen (TODO)
             composable(Screen.Collections.route) {
-                // TODO: CollectionsScreen
-                Text("Collections Screen")
+                PlaceholderScreen(
+                    title = "Collections",
+                    onNavigateBack = { navController.navigateUp() }
+                )
             }
 
-            // Library Screen
+            // Library Screen (TODO)
             composable(Screen.Library.route) {
-                // TODO: LibraryScreen
-                Text("Library Screen")
+                PlaceholderScreen(
+                    title = "My Library",
+                    onNavigateBack = { navController.navigateUp() }
+                )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PlaceholderScreen(
+    title: String,
+    onNavigateBack: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(title) },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            androidx.compose.material.icons.Icons.Default.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentAlignment = androidx.compose.ui.Alignment.Center
+        ) {
+            Text(
+                "$title - Coming Soon",
+                style = MaterialTheme.typography.headlineMedium
+            )
         }
     }
 }
