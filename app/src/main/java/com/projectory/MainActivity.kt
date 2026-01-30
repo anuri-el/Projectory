@@ -21,6 +21,7 @@ import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
 import com.projectory.ui.project.add.AddProjectScreen
 import com.projectory.ui.project.detail.ProjectDetailScreen
+import com.projectory.ui.statistics.daily.DailyStatsScreen
 import com.projectory.ui.theme.ProjectoryTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -155,10 +156,9 @@ fun ProjectoryApp() {
                 )
             }
 
-            // Daily Stats Screen (TODO)
+            // Daily Stats Screen
             composable(Screen.DailyStats.route) {
-                PlaceholderScreen(
-                    title = "Daily Statistics",
+                DailyStatsScreen(
                     onNavigateBack = { navController.navigateUp() }
                 )
             }
