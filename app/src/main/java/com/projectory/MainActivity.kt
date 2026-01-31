@@ -18,6 +18,7 @@ import com.projectory.ui.achievements.AchievementsScreen
 import com.projectory.ui.calendar.CalendarScreen
 import com.projectory.ui.collections.CollectionsScreen
 import com.projectory.ui.home.HomeScreen
+import com.projectory.ui.library.LibraryScreen
 import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
 import com.projectory.ui.project.add.AddProjectScreen
@@ -182,48 +183,15 @@ fun ProjectoryApp() {
                 )
             }
 
-            // Library Screen (TODO)
+            // Library Screen
             composable(Screen.Library.route) {
-                PlaceholderScreen(
-                    title = "My Library",
-                    onNavigateBack = { navController.navigateUp() }
+                LibraryScreen(
+                    onNavigateBack = { navController.navigateUp() },
+                    onNavigateToProject = { projectId ->
+                        navController.navigate(Screen.ProjectDetail.createRoute(projectId))
+                    }
                 )
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PlaceholderScreen(
-    title: String,
-    onNavigateBack: () -> Unit
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(title) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            androidx.compose.material.icons.Icons.Default.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        androidx.compose.foundation.layout.Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentAlignment = androidx.compose.ui.Alignment.Center
-        ) {
-            Text(
-                "$title - Coming Soon",
-                style = MaterialTheme.typography.headlineMedium
-            )
         }
     }
 }
