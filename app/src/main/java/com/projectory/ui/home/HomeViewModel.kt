@@ -29,35 +29,37 @@ class HomeViewModel @Inject constructor(
 
     private fun loadData() {
         viewModelScope.launch {
-            projectRepository.getProjectsByStatus(ProjectStatus.ACTIVE)
-                .combine(projectRepository.getProjectsByStatus(ProjectStatus.COMPLETED)) { active, completed ->
-                    Pair(active, completed)
+            combine(
+                projectRepository.getProjectsByStatus(ProjectStatus.IN_PROGRESS),
+                projectRepository.getProjectsByStatus(ProjectStatus.PLANNED),
+                projectRepository.getProjectsByStatus(ProjectStatus.COMPLETED)
+            ) { inProgress, planned, completed ->
+                Triple(inProgress, planned, completed)
+            }.collectLatest { (inProgress, planned, completed) ->
+                val streak = calculateStreak()
+                val today = LocalDateTime.now()
+                val startOfDay = today.withHour(0).withMinute(0).withSecond(0)
+                val endOfDay = today.withHour(23).withMinute(59).withSecond(59)
+
+                val dailyTime = activityRepository.getTotalTimeInRange(startOfDay, endOfDay)
+                val dailyProgress = ((dailyTime / 3600.0) * 100).toInt().coerceIn(0, 100)
+
+                val yearStart = LocalDateTime.of(today.year, 1, 1, 0, 0)
+                val completedThisYear = completed.count {
+                    it.completedDate?.year == today.year
                 }
-                .collectLatest { (active, completed) ->
-                    val streak = calculateStreak()
-                    val today = LocalDateTime.now()
-                    val startOfDay = today.withHour(0).withMinute(0).withSecond(0)
-                    val endOfDay = today.withHour(23).withMinute(59).withSecond(59)
 
-                    val dailyTime = activityRepository.getTotalTimeInRange(startOfDay, endOfDay)
-                    val dailyProgress = ((dailyTime / 3600.0) * 100).toInt().coerceIn(0, 100)
-
-                    val yearStart = LocalDateTime.of(today.year, 1, 1, 0, 0)
-                    val completedThisYear = completed.count {
-                        it.completedDate?.year == today.year
-                    }
-
-                    _uiState.update {
-                        it.copy(
-                            activeProjects = active.take(5),
-                            recentProject = active.firstOrNull(),
-                            currentStreak = streak,
-                            dailyProgress = dailyProgress,
-                            annualBooksRead = completedThisYear,
-                            isLoading = false
-                        )
-                    }
+                _uiState.update {
+                    it.copy(
+                        inProgressProjects = inProgress,
+                        plannedProjects = planned,
+                        currentStreak = streak,
+                        dailyProgress = dailyProgress,
+                        annualProjectsCompleted = completedThisYear,
+                        isLoading = false
+                    )
                 }
+            }
         }
     }
 

@@ -9,7 +9,7 @@ data class AddProjectUiState(
     val title: String = "",
     val description: String = "",
     val category: Category = Category.PERSONAL,
-    val status: ProjectStatus = ProjectStatus.ACTIVE,
+    val status: ProjectStatus = ProjectStatus.PLANNED,
     val imageUri: Uri? = null,
     val imagePath: String? = null,
     val tags: List<String> = emptyList(),

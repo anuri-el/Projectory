@@ -41,7 +41,7 @@ fun YearOverviewCards(
     ) {
         OverviewCard(
             icon = Icons.Default.PlayArrow,
-            title = "Active",
+            title = "In Progress",
             value = activeProjects.toString(),
             color = Color(0xFFF59E0B),
             modifier = Modifier.weight(1f)

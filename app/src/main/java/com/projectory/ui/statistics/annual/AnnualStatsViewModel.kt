@@ -101,7 +101,7 @@ class AnnualStatsViewModel @Inject constructor(
                     it.createdDate.year == year
                 }
                 val completed = yearProjects.count { it.status == ProjectStatus.COMPLETED }
-                val active = yearProjects.count { it.status == ProjectStatus.ACTIVE }
+                val inProgress = yearProjects.count { it.status == ProjectStatus.IN_PROGRESS }
 
                 _uiState.update {
                     it.copy(
@@ -109,7 +109,7 @@ class AnnualStatsViewModel @Inject constructor(
                         categoryStats = categoryStats,
                         totalProjects = yearProjects.size,
                         completedProjects = completed,
-                        activeProjects = active,
+                        activeProjects = inProgress,
                         totalTime = activities.sumOf { it.timeSpent },
                         totalTasks = activities.sumOf { it.tasksCompleted },
                         totalNotes = activities.sumOf { it.notesAdded },

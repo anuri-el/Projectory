@@ -64,9 +64,11 @@ fun ProjectGridItem(
                         .padding(8.dp),
                     shape = RoundedCornerShape(12.dp),
                     color = when (project.status) {
-                        ProjectStatus.ACTIVE -> Color(0xFF10B981)
-                        ProjectStatus.COMPLETED -> Color(0xFF6366F1)
+                        ProjectStatus.IN_PROGRESS -> Color(0xFF10B981)
+                        ProjectStatus.PLANNED -> Color(0xFF6366F1)
+                        ProjectStatus.COMPLETED -> Color(0xFF8B5CF6)
                         ProjectStatus.PAUSED -> Color(0xFFF59E0B)
+                        ProjectStatus.GAVE_UP -> Color(0xFFEF4444)
                     }.copy(alpha = 0.9f)
                 ) {
                     Text(

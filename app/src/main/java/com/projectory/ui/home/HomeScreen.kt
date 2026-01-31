@@ -1,5 +1,6 @@
 package com.projectory.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -21,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun HomeScreen(
     onNavigateToProject: (Long) -> Unit,
     onNavigateToAddProject: () -> Unit,
+    onNavigateToInProgress: () -> Unit,
     onNavigateToCalendar: () -> Unit,
     onNavigateToDailyStats: () -> Unit,
     onNavigateToAnnualStats: () -> Unit,
@@ -73,19 +75,34 @@ fun HomeScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Current Project Card
-                if (uiState.recentProject != null) {
-                    CurrentProjectCard(
-                        project = uiState.recentProject!!,
-                        onClick = { onNavigateToProject(uiState.recentProject!!.id) }
-                    )
-                } else {
-                    AddProjectPrompt(onNavigateToAddProject)
+                // Horizontal scrolling section: Add Project + In Progress Projects
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // Add Project Card (First)
+                    item {
+                        AddProjectCard(
+                            onClick = onNavigateToAddProject,
+                            modifier = Modifier.width(280.dp)
+                        )
+                    }
+
+                    // In Progress Projects
+                    items(uiState.inProgressProjects) { project ->
+                        InProgressProjectCard(
+                            project = project,
+                            onClick = { onNavigateToProject(project.id) },
+                            modifier = Modifier.width(280.dp)
+                        )
+                    }
                 }
 
-                // Active Projects Count
+                // Current Projects Count Card (clickable to navigate)
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onNavigateToInProgress),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                     )
@@ -97,11 +114,28 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            "You are working on ${uiState.activeProjects.size} projects.",
-                            style = MaterialTheme.typography.bodyLarge
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                Icons.Default.PlayCircle,
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                "You are working on ${uiState.inProgressProjects.size} projects.",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        Icon(
+                            Icons.Default.ChevronRight,
+                            contentDescription = "View all",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
                         )
-                        // Project icons placeholder
                     }
                 }
 
@@ -141,7 +175,7 @@ fun HomeScreen(
                     StatCard(
                         modifier = Modifier.weight(1f),
                         title = "Annual statistics",
-                        subtitle = "${uiState.annualBooksRead} projects read",
+                        subtitle = "${uiState.annualProjectsCompleted} projects read",
                         icon = Icons.Default.BarChart,
                         onClick = onNavigateToAnnualStats
                     )
@@ -165,8 +199,8 @@ fun HomeScreen(
                     onClick = onNavigateToLibrary
                 )
 
-                // Projects to work on later
-                if (uiState.activeProjects.size > 1) {
+                // Projects to work on later (Planned projects)
+                if (uiState.plannedProjects.isNotEmpty()) {
                     Text(
                         "Projects to work on later",
                         style = MaterialTheme.typography.titleLarge,
@@ -176,11 +210,8 @@ fun HomeScreen(
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        item {
-                            AddProjectButton(onClick = onNavigateToAddProject)
-                        }
-                        items(uiState.activeProjects.drop(1)) { project ->
-                            ProjectThumbnail(
+                        items(uiState.plannedProjects) { project ->
+                            PlannedProjectThumbnail(
                                 project = project,
                                 onClick = { onNavigateToProject(project.id) }
                             )

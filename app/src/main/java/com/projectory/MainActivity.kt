@@ -18,6 +18,7 @@ import com.projectory.ui.achievements.AchievementsScreen
 import com.projectory.ui.calendar.CalendarScreen
 import com.projectory.ui.collections.CollectionsScreen
 import com.projectory.ui.home.HomeScreen
+import com.projectory.ui.inprogress.InProgressScreen
 import com.projectory.ui.library.LibraryScreen
 import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
@@ -91,6 +92,9 @@ fun ProjectoryApp() {
                     onNavigateToAddProject = {
                         navController.navigate(Screen.AddProject.route)
                     },
+                    onNavigateToInProgress = {
+                        navController.navigate(Screen.InProgress.route)
+                    },
                     onNavigateToCalendar = {
                         navController.navigate(Screen.Calendar.route)
                     },
@@ -121,6 +125,16 @@ fun ProjectoryApp() {
             // Achievements Screen
             composable(Screen.Achievements.route) {
                 AchievementsScreen(
+                    onNavigateToProject = { projectId ->
+                        navController.navigate(Screen.ProjectDetail.createRoute(projectId))
+                    }
+                )
+            }
+
+            // In Progress Screen
+            composable(Screen.InProgress.route) {
+                InProgressScreen(
+                    onNavigateBack = { navController.navigateUp() },
                     onNavigateToProject = { projectId ->
                         navController.navigate(Screen.ProjectDetail.createRoute(projectId))
                     }
