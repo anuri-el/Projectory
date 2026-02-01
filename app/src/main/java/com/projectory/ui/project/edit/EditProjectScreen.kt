@@ -219,25 +219,6 @@ fun EditProjectScreen(
                 onCategorySelected = { viewModel.updateCategory(it) }
             )
 
-            // Status
-            Text(
-                "Status",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ProjectStatus.entries.forEach { status ->
-                    FilterChip(
-                        selected = uiState.status == status,
-                        onClick = { viewModel.updateStatus(status) },
-                        label = { Text(status.displayName) }
-                    )
-                }
-            }
-
             // Tags
             Text(
                 "Tags",

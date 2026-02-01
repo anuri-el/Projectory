@@ -28,7 +28,9 @@ object DatabaseModule {
             context,
             ProjectoryDatabase::class.java,
             "projectory_database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

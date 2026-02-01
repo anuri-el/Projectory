@@ -10,6 +10,7 @@ data class Project(
     val category: Category,
     val status: ProjectStatus,
     val createdDate: LocalDateTime = LocalDateTime.now(),
+    val startDate: LocalDateTime? = null,
     val completedDate: LocalDateTime? = null,
     val totalTimeSpent: Long = 0,
     val progress: Float = 0f,

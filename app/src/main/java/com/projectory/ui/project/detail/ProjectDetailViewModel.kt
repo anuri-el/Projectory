@@ -50,6 +50,28 @@ class ProjectDetailViewModel @Inject constructor(
         }
     }
 
+    fun startProject() {
+        viewModelScope.launch {
+            _uiState.value.project?.let { project ->
+                if (project.status == ProjectStatus.PLANNED) {
+                    val updatedProject = project.copy(
+                        status = ProjectStatus.IN_PROGRESS,
+                        startDate = LocalDateTime.now()
+                    )
+                    projectRepository.updateProject(updatedProject)
+                }
+            }
+        }
+    }
+
+    fun deleteProject() {
+        viewModelScope.launch {
+            _uiState.value.project?.let { project ->
+                projectRepository.deleteProject(project)
+            }
+        }
+    }
+
     fun toggleTask(task: Task) {
         viewModelScope.launch {
             taskRepository.toggleTaskCompletion(task.id)
@@ -158,19 +180,6 @@ class ProjectDetailViewModel @Inject constructor(
         }
     }
 
-    fun updateProjectStatus(status: ProjectStatus) {
-        viewModelScope.launch {
-            _uiState.value.project?.let { project ->
-                val updatedProject = project.copy(
-                    status = status,
-                    completedDate = if (status == ProjectStatus.COMPLETED)
-                        LocalDateTime.now() else null
-                )
-                projectRepository.updateProject(updatedProject)
-            }
-        }
-    }
-
     fun showAddTaskDialog() {
         _uiState.update { it.copy(showAddTaskDialog = true) }
     }
@@ -185,13 +194,5 @@ class ProjectDetailViewModel @Inject constructor(
 
     fun hideAddNoteDialog() {
         _uiState.update { it.copy(showAddNoteDialog = false) }
-    }
-
-    fun showEditProjectDialog() {
-        _uiState.update { it.copy(showEditProjectDialog = true) }
-    }
-
-    fun hideEditProjectDialog() {
-        _uiState.update { it.copy(showEditProjectDialog = false) }
     }
 }

@@ -14,6 +14,7 @@ data class ProjectEntity(
     val category: String, // Life area
     val status: String, // "active", "completed", "paused"
     val createdDate: LocalDateTime = LocalDateTime.now(),
+    val startDate: LocalDateTime? = null,
     val completedDate: LocalDateTime? = null,
     val totalTimeSpent: Long = 0, // in seconds
     val progress: Float = 0f, // 0-100

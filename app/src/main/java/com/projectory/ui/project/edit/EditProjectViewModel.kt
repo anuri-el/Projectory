@@ -42,7 +42,6 @@ class EditProjectViewModel @Inject constructor(
                             title = project.title,
                             description = project.description,
                             category = project.category,
-                            status = project.status,
                             currentImagePath = project.imagePath,
                             tags = project.tags,
                             isLoading = false
@@ -62,10 +61,6 @@ class EditProjectViewModel @Inject constructor(
 
     fun updateCategory(category: Category) {
         _uiState.update { it.copy(category = category) }
-    }
-
-    fun updateStatus(status: ProjectStatus) {
-        _uiState.update { it.copy(status = status) }
     }
 
     fun updateImageUri(uri: Uri?) {
@@ -116,20 +111,13 @@ class EditProjectViewModel @Inject constructor(
                     state.currentImagePath
                 }
 
-                // Update project
+                // Update project (keep existing status, dates)
                 val updatedProject = project.copy(
                     title = state.title,
                     description = state.description,
                     category = state.category,
-                    status = state.status,
                     imagePath = imagePath,
-                    tags = state.tags,
-                    completedDate = if (state.status == ProjectStatus.COMPLETED && project.completedDate == null)
-                        java.time.LocalDateTime.now()
-                    else if (state.status != ProjectStatus.COMPLETED)
-                        null
-                    else
-                        project.completedDate
+                    tags = state.tags
                 )
 
                 projectRepository.updateProject(updatedProject)

@@ -40,8 +40,8 @@ fun TimerScreen(
                 actions = {
                     TextButton(
                         onClick = {
-                            viewModel.completeSession()
-                            onSessionComplete()
+                            viewModel.stopTimer()
+                            viewModel.showSessionCompleteDialog()
                         }
                     ) {
                         Text(
@@ -215,6 +215,30 @@ fun TimerScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+
+    // Session Complete Dialog
+    if (uiState.showSessionCompleteDialog) {
+        SessionCompleteDialog(
+            sessionTime = uiState.timerSeconds,
+            tasks = uiState.tasks,
+            onDismiss = {
+                viewModel.hideSessionCompleteDialog()
+                viewModel.completeSession()
+                onSessionComplete()
+            },
+            onStatusChange = { status ->
+                viewModel.updateProjectStatus(status)
+            },
+            onTasksSelected = { taskIds ->
+                viewModel.markTasksAsCompleted(taskIds)
+            },
+            onConfirm = {
+                viewModel.hideSessionCompleteDialog()
+                viewModel.completeSession()
+                onSessionComplete()
+            }
+        )
     }
 
     // Add Note Dialog

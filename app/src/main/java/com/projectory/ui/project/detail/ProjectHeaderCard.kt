@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -18,10 +19,7 @@ import com.projectory.domain.model.*
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun ProjectHeaderCard(
-    project: Project?,
-    onStatusChange: (ProjectStatus) -> Unit
-) {
+fun ProjectHeaderCard(project: Project?) {
     if (project == null) return
 
     Card(
@@ -86,20 +84,27 @@ fun ProjectHeaderCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Status Chips
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            // Status Badge
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = when (project.status) {
+                    ProjectStatus.IN_PROGRESS -> Color(0xFF10B981)
+                    ProjectStatus.PLANNED -> Color(0xFF6366F1)
+                    ProjectStatus.COMPLETED -> Color(0xFF8B5CF6)
+                    ProjectStatus.PAUSED -> Color(0xFFF59E0B)
+                    ProjectStatus.GAVE_UP -> Color(0xFFEF4444)
+                }.copy(alpha = 0.9f)
             ) {
-                ProjectStatus.entries.forEach { status ->
-                    FilterChip(
-                        selected = project.status == status,
-                        onClick = { onStatusChange(status) },
-                        label = { Text(status.displayName) }
-                    )
-                }
+                Text(
+                    project.status.displayName,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Stats
             Row(
@@ -108,8 +113,9 @@ fun ProjectHeaderCard(
             ) {
                 StatItem(
                     icon = Icons.Default.CalendarToday,
-                    label = "Started",
-                    value = project.createdDate.format(DateTimeFormatter.ofPattern("MMM dd"))
+                    label = if (project.startDate != null) "Started" else "Created",
+                    value = (project.startDate ?: project.createdDate)
+                        .format(DateTimeFormatter.ofPattern("MMM dd"))
                 )
                 StatItem(
                     icon = Icons.Default.Timer,

@@ -6,8 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.projectory.data.repository.ActivityRepository
 import com.projectory.data.repository.NoteRepository
 import com.projectory.data.repository.ProjectRepository
+import com.projectory.data.repository.TaskRepository
 import com.projectory.domain.model.Activity
 import com.projectory.domain.model.Note
+import com.projectory.domain.model.ProjectStatus
+import com.projectory.domain.model.Task
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,6 +21,7 @@ import javax.inject.Inject
 class TimerViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val projectRepository: ProjectRepository,
+    private val taskRepository: TaskRepository,
     private val noteRepository: NoteRepository,
     private val activityRepository: ActivityRepository
 ) : ViewModel() {
@@ -39,13 +43,15 @@ class TimerViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 projectRepository.getProjectById(projectId),
+                taskRepository.getTasksForProject(projectId),
                 noteRepository.getNotesForProject(projectId)
-            ) { project, notes ->
-                Pair(project, notes)
-            }.collectLatest { (project, notes) ->
+            ) { project, tasks, notes ->
+                Triple(project, tasks, notes)
+            }.collectLatest { (project, tasks, notes) ->
                 _uiState.update {
                     it.copy(
                         project = project,
+                        tasks = tasks,
                         notes = notes
                     )
                 }
@@ -92,8 +98,42 @@ class TimerViewModel @Inject constructor(
         }
     }
 
-    fun completeSession() {
+    fun stopTimer() {
         pauseTimer()
+    }
+
+    fun showSessionCompleteDialog() {
+        _uiState.update { it.copy(showSessionCompleteDialog = true) }
+    }
+
+    fun hideSessionCompleteDialog() {
+        _uiState.update { it.copy(showSessionCompleteDialog = false) }
+    }
+
+    fun updateProjectStatus(status: ProjectStatus) {
+        viewModelScope.launch {
+            _uiState.value.project?.let { project ->
+                val updatedProject = project.copy(
+                    status = status,
+                    completedDate = if (status == ProjectStatus.COMPLETED)
+                        LocalDateTime.now()
+                    else
+                        null
+                )
+                projectRepository.updateProject(updatedProject)
+            }
+        }
+    }
+
+    fun markTasksAsCompleted(taskIds: List<Long>) {
+        viewModelScope.launch {
+            taskIds.forEach { taskId ->
+                taskRepository.toggleTaskCompletion(taskId)
+            }
+        }
+    }
+
+    fun completeSession() {
         val totalTime = _uiState.value.timerSeconds
 
         if (totalTime > 0) {
