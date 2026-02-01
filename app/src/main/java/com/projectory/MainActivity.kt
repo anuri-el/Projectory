@@ -24,6 +24,7 @@ import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
 import com.projectory.ui.project.add.AddProjectScreen
 import com.projectory.ui.project.detail.ProjectDetailScreen
+import com.projectory.ui.project.history.ProjectHistoryScreen
 import com.projectory.ui.statistics.annual.AnnualStatsScreen
 import com.projectory.ui.statistics.daily.DailyStatsScreen
 import com.projectory.ui.theme.ProjectoryTheme
@@ -149,8 +150,22 @@ fun ProjectoryApp() {
             composable(
                 route = Screen.ProjectDetail.route,
                 arguments = listOf(navArgument("projectId") { type = NavType.LongType })
-            ) {
+            ) { backStackEntry ->
+                val projectId = backStackEntry.arguments?.getLong("projectId") ?: 0L
                 ProjectDetailScreen(
+                    onNavigateBack = { navController.navigateUp() },
+                    onNavigateToHistory = {
+                        navController.navigate(Screen.ProjectHistory.createRoute(projectId))
+                    },
+                )
+            }
+
+            // Project History Screen
+            composable(
+                route = Screen.ProjectHistory.route,
+                arguments = listOf(navArgument("projectId") { type = NavType.LongType })
+            ) {
+                ProjectHistoryScreen(
                     onNavigateBack = { navController.navigateUp() }
                 )
             }

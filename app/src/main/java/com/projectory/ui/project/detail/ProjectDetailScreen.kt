@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun ProjectDetailScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToHistory: () -> Unit,
     viewModel: ProjectDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -31,6 +32,9 @@ fun ProjectDetailScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = onNavigateToHistory) {
+                        Icon(Icons.Default.History, contentDescription = "View History")
+                    }
                     IconButton(onClick = { viewModel.showEditProjectDialog() }) {
                         Icon(Icons.Default.Edit, contentDescription = "Edit")
                     }
