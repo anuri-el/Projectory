@@ -24,6 +24,7 @@ import com.projectory.ui.memories.MemoriesScreen
 import com.projectory.ui.navigation.*
 import com.projectory.ui.project.add.AddProjectScreen
 import com.projectory.ui.project.detail.ProjectDetailScreen
+import com.projectory.ui.project.edit.EditProjectScreen
 import com.projectory.ui.project.history.ProjectHistoryScreen
 import com.projectory.ui.statistics.annual.AnnualStatsScreen
 import com.projectory.ui.statistics.daily.DailyStatsScreen
@@ -157,6 +158,9 @@ fun ProjectoryApp() {
                     onNavigateToHistory = {
                         navController.navigate(Screen.ProjectHistory.createRoute(projectId))
                     },
+                    onNavigateToEdit = {
+                        navController.navigate(Screen.EditProject.createRoute(projectId))
+                    }
                 )
             }
 
@@ -167,6 +171,17 @@ fun ProjectoryApp() {
             ) {
                 ProjectHistoryScreen(
                     onNavigateBack = { navController.navigateUp() }
+                )
+            }
+
+            // Edit Project Screen
+            composable(
+                route = Screen.EditProject.route,
+                arguments = listOf(navArgument("projectId") { type = NavType.LongType })
+            ) {
+                EditProjectScreen(
+                    onNavigateBack = { navController.navigateUp() },
+                    onProjectUpdated = { navController.navigateUp() }
                 )
             }
 

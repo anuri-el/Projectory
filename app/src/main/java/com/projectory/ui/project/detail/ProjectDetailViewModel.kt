@@ -87,6 +87,48 @@ class ProjectDetailViewModel @Inject constructor(
         }
     }
 
+    fun editTask(task: Task, newTitle: String) {
+        if (newTitle.isBlank()) return
+        viewModelScope.launch {
+            val updatedTask = task.copy(title = newTitle)
+            taskRepository.updateTask(updatedTask)
+        }
+    }
+
+    fun moveTaskUp(index: Int) {
+        viewModelScope.launch {
+            val tasks = _uiState.value.tasks
+            if (index <= 0 || index >= tasks.size) return@launch
+
+            val currentTask = tasks[index]
+            val previousTask = tasks[index - 1]
+
+            // Skip if previous task is completed
+            if (previousTask.isCompleted) return@launch
+
+            // Swap orders
+            taskRepository.updateTask(currentTask.copy(order = previousTask.order))
+            taskRepository.updateTask(previousTask.copy(order = currentTask.order))
+        }
+    }
+
+    fun moveTaskDown(index: Int) {
+        viewModelScope.launch {
+            val tasks = _uiState.value.tasks
+            if (index < 0 || index >= tasks.size - 1) return@launch
+
+            val currentTask = tasks[index]
+            val nextTask = tasks[index + 1]
+
+            // Skip if next task is completed
+            if (nextTask.isCompleted) return@launch
+
+            // Swap orders
+            taskRepository.updateTask(currentTask.copy(order = nextTask.order))
+            taskRepository.updateTask(nextTask.copy(order = currentTask.order))
+        }
+    }
+
     fun addNote(content: String) {
         if (content.isBlank()) return
         viewModelScope.launch {

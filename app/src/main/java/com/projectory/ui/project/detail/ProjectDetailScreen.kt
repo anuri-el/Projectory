@@ -3,6 +3,7 @@ package com.projectory.ui.project.detail
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -18,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun ProjectDetailScreen(
     onNavigateBack: () -> Unit,
     onNavigateToHistory: () -> Unit,
+    onNavigateToEdit: () -> Unit,
     viewModel: ProjectDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -35,7 +37,7 @@ fun ProjectDetailScreen(
                     IconButton(onClick = onNavigateToHistory) {
                         Icon(Icons.Default.History, contentDescription = "View History")
                     }
-                    IconButton(onClick = { viewModel.showEditProjectDialog() }) {
+                    IconButton(onClick = onNavigateToEdit) {
                         Icon(Icons.Default.Edit, contentDescription = "Edit")
                     }
                     IconButton(onClick = { /* Share */ }) {
@@ -98,11 +100,24 @@ fun ProjectDetailScreen(
 
                 // Tasks Section
                 item {
-                    Text(
-                        "Tasks",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Tasks",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        if (uiState.tasks.isNotEmpty()) {
+                            Text(
+                                "${uiState.tasks.count { it.isCompleted }}/${uiState.tasks.size}",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
                 }
 
                 if (uiState.tasks.isEmpty()) {
@@ -114,11 +129,18 @@ fun ProjectDetailScreen(
                         )
                     }
                 } else {
-                    items(uiState.tasks) { task ->
+                    itemsIndexed(uiState.tasks) { index, task ->
                         TaskItem(
                             task = task,
                             onToggle = { viewModel.toggleTask(task) },
-                            onDelete = { viewModel.deleteTask(task) }
+                            onDelete = { viewModel.deleteTask(task) },
+                            onEdit = { newTitle -> viewModel.editTask(task, newTitle) },
+                            onMoveUp = if (index > 0 && !task.isCompleted) {
+                                { viewModel.moveTaskUp(index) }
+                            } else null,
+                            onMoveDown = if (index < uiState.tasks.size - 1 && !task.isCompleted) {
+                                { viewModel.moveTaskDown(index) }
+                            } else null
                         )
                     }
                 }
@@ -142,10 +164,10 @@ fun ProjectDetailScreen(
                         )
                     }
                 } else {
-                    items(uiState.notes) { note ->
+                    items(uiState.notes.size) { index ->
                         NoteItem(
-                            note = note,
-                            onDelete = { viewModel.deleteNote(note) }
+                            note = uiState.notes[index],
+                            onDelete = { viewModel.deleteNote(uiState.notes[index]) }
                         )
                     }
                 }

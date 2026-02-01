@@ -20,4 +20,7 @@ sealed class Screen(val route: String) {
     object ProjectHistory : Screen("project/{projectId}/history") {
         fun createRoute(projectId: Long) = "project/$projectId/history"
     }
+    object EditProject : Screen("project/{projectId}/edit") {
+        fun createRoute(projectId: Long) = "project/$projectId/edit"
+    }
 }
