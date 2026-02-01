@@ -83,17 +83,6 @@ fun ProjectDetailScreen(
                     )
                 }
 
-                // Timer Card
-                item {
-                    TimerCard(
-                        seconds = uiState.timerSeconds,
-                        isRunning = uiState.isTimerRunning,
-                        onStart = { viewModel.startTimer() },
-                        onStop = { viewModel.stopTimer() },
-                        onReset = { viewModel.resetTimer() }
-                    )
-                }
-
                 // Progress Card
                 item {
                     ProgressCard(

@@ -25,9 +25,6 @@ class ProjectDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProjectDetailUiState())
     val uiState: StateFlow<ProjectDetailUiState> = _uiState.asStateFlow()
 
-    private var timerStartTime: Long = 0L
-    private var accumulatedTime: Long = 0L
-
     init {
         loadProjectDetails()
     }
@@ -117,54 +114,6 @@ class ProjectDetailViewModel @Inject constructor(
         viewModelScope.launch {
             noteRepository.deleteNote(note)
         }
-    }
-
-    fun startTimer() {
-        timerStartTime = System.currentTimeMillis()
-        _uiState.update { it.copy(isTimerRunning = true) }
-
-        viewModelScope.launch {
-            while (_uiState.value.isTimerRunning) {
-                kotlinx.coroutines.delay(1000)
-                val elapsed = (System.currentTimeMillis() - timerStartTime) / 1000
-                _uiState.update { it.copy(timerSeconds = accumulatedTime + elapsed) }
-            }
-        }
-    }
-
-    fun stopTimer() {
-        if (_uiState.value.isTimerRunning) {
-            val elapsed = (System.currentTimeMillis() - timerStartTime) / 1000
-            accumulatedTime += elapsed
-
-            viewModelScope.launch {
-                // Save time to project
-                projectRepository.addTimeToProject(projectId, elapsed)
-
-                // Log activity
-                val today = LocalDateTime.now()
-                activityRepository.insertActivity(
-                    Activity(
-                        projectId = projectId,
-                        date = today,
-                        timeSpent = elapsed
-                    )
-                )
-            }
-
-            _uiState.update {
-                it.copy(
-                    isTimerRunning = false,
-                    timerSeconds = accumulatedTime
-                )
-            }
-        }
-    }
-
-    fun resetTimer() {
-        accumulatedTime = 0
-        timerStartTime = 0
-        _uiState.update { it.copy(timerSeconds = 0, isTimerRunning = false) }
     }
 
     fun updateProjectStatus(status: ProjectStatus) {

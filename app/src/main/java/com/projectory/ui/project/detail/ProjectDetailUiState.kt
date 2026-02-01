@@ -9,8 +9,6 @@ data class ProjectDetailUiState(
     val tasks: List<Task> = emptyList(),
     val notes: List<Note> = emptyList(),
     val isLoading: Boolean = true,
-    val isTimerRunning: Boolean = false,
-    val timerSeconds: Long = 0,
     val showAddTaskDialog: Boolean = false,
     val showAddNoteDialog: Boolean = false,
     val showEditProjectDialog: Boolean = false

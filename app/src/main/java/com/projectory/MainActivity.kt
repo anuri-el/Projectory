@@ -27,6 +27,7 @@ import com.projectory.ui.project.detail.ProjectDetailScreen
 import com.projectory.ui.statistics.annual.AnnualStatsScreen
 import com.projectory.ui.statistics.daily.DailyStatsScreen
 import com.projectory.ui.theme.ProjectoryTheme
+import com.projectory.ui.timer.TimerScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -89,6 +90,9 @@ fun ProjectoryApp() {
                     onNavigateToProject = { projectId ->
                         navController.navigate(Screen.ProjectDetail.createRoute(projectId))
                     },
+                    onNavigateToTimer = { projectId ->
+                        navController.navigate(Screen.Timer.createRoute(projectId))
+                    },
                     onNavigateToAddProject = {
                         navController.navigate(Screen.AddProject.route)
                     },
@@ -148,6 +152,17 @@ fun ProjectoryApp() {
             ) {
                 ProjectDetailScreen(
                     onNavigateBack = { navController.navigateUp() }
+                )
+            }
+
+            // Timer Screen
+            composable(
+                route = Screen.Timer.route,
+                arguments = listOf(navArgument("projectId") { type = NavType.LongType })
+            ) {
+                TimerScreen(
+                    onNavigateBack = { navController.navigateUp() },
+                    onSessionComplete = { navController.navigateUp() }
                 )
             }
 

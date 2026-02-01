@@ -5,7 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,11 +22,13 @@ import java.time.format.DateTimeFormatter
 fun InProgressProjectCard(
     project: Project,
     onClick: () -> Unit,
+    onStartTimer: () -> Unit,
+    onAddNote: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
-            .height(220.dp)
+            .height(280.dp)
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -111,7 +113,7 @@ fun InProgressProjectCard(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Progress bar
             LinearProgressIndicator(
@@ -121,6 +123,43 @@ fun InProgressProjectCard(
                     .height(6.dp)
                     .clip(RoundedCornerShape(3.dp))
             )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Action Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = onStartTimer,
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Icon(
+                        Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text("Start Timer")
+                }
+
+                OutlinedButton(
+                    onClick = onAddNote,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text("Add Note")
+                }
+            }
         }
     }
 }

@@ -14,4 +14,7 @@ sealed class Screen(val route: String) {
     object AnnualStats : Screen("annual_stats")
     object Collections : Screen("collections")
     object Library : Screen("library")
+    object Timer : Screen("timer/{projectId}") {
+        fun createRoute(projectId: Long) = "timer/$projectId"
+    }
 }

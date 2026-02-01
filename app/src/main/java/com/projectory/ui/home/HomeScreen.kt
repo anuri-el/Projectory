@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun HomeScreen(
     onNavigateToProject: (Long) -> Unit,
+    onNavigateToTimer: (Long) -> Unit,
     onNavigateToAddProject: () -> Unit,
     onNavigateToInProgress: () -> Unit,
     onNavigateToCalendar: () -> Unit,
@@ -31,6 +32,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showAddNoteDialog by remember { mutableStateOf(false) }
+    var selectedProjectForNote by remember { mutableStateOf<Long?>(null) }
 
     Scaffold(
         topBar = {
@@ -93,6 +96,11 @@ fun HomeScreen(
                         InProgressProjectCard(
                             project = project,
                             onClick = { onNavigateToProject(project.id) },
+                            onStartTimer = { onNavigateToTimer(project.id) },
+                            onAddNote = {
+                                selectedProjectForNote = project.id
+                                showAddNoteDialog = true
+                            },
                             modifier = Modifier.width(280.dp)
                         )
                     }
@@ -220,5 +228,20 @@ fun HomeScreen(
                 }
             }
         }
+    }
+
+    // Add Note Dialog
+    if (showAddNoteDialog && selectedProjectForNote != null) {
+        QuickAddNoteDialog(
+            projectId = selectedProjectForNote!!,
+            onDismiss = {
+                showAddNoteDialog = false
+                selectedProjectForNote = null
+            },
+            onNoteAdded = {
+                showAddNoteDialog = false
+                selectedProjectForNote = null
+            }
+        )
     }
 }

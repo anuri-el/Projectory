@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.projectory.data.repository.ActivityRepository
 import com.projectory.data.repository.CollectionRepository
+import com.projectory.data.repository.NoteRepository
 import com.projectory.data.repository.ProjectRepository
+import com.projectory.domain.model.Activity
+import com.projectory.domain.model.Note
 import com.projectory.domain.model.ProjectStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -17,7 +20,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val activityRepository: ActivityRepository,
-    private val collectionRepository: CollectionRepository
+    private val collectionRepository: CollectionRepository,
+    private val noteRepository: NoteRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -83,6 +87,29 @@ class HomeViewModel @Inject constructor(
         }
 
         return streak
+    }
+
+    fun addQuickNote(projectId: Long, content: String) {
+        if (content.isBlank()) return
+
+        viewModelScope.launch {
+            // Add note
+            val note = Note(
+                projectId = projectId,
+                content = content
+            )
+            noteRepository.insertNote(note)
+
+            // Log activity
+            val today = LocalDateTime.now()
+            activityRepository.insertActivity(
+                Activity(
+                    projectId = projectId,
+                    date = today,
+                    notesAdded = 1
+                )
+            )
+        }
     }
 
     fun refreshData() {
